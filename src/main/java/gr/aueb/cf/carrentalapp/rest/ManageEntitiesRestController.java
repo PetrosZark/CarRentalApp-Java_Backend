@@ -13,7 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -31,15 +31,15 @@ public class ManageEntitiesRestController {
     private final CityService cityService;
 
     @GetMapping("/users")
-    public ResponseEntity<Page<UserReadOnlyDTO>> getPaginatedUsers(
+    public ResponseEntity<Paginated<UserReadOnlyDTO>> getFilteredUsers(
+            @RequestParam(required = false) String vat,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<UserReadOnlyDTO> users = userService.getPaginatedUsers(page, size);
-        return ResponseEntity.ok(users);
-    }
 
-    @GetMapping("/users/filtered")
-    public ResponseEntity<Paginated<UserReadOnlyDTO>> getFilteredUsers(UserFilters filters) {
+        UserFilters filters = new UserFilters();
+        filters.setVat(vat);
+        filters.setPageable(PageRequest.of(page, size));
+
         Paginated<UserReadOnlyDTO> filteredUsers = userService.getUsersFilteredPaginated(filters);
         return ResponseEntity.ok(filteredUsers);
     }

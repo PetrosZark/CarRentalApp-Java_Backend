@@ -36,7 +36,7 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChainOld(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -44,7 +44,15 @@ public class SecurityConfiguration {
                         .accessDeniedHandler(myCustomAccessDeniedHandler())
                         .authenticationEntryPoint(myCustomAuthenticationEntryPoint()))
                 .authorizeHttpRequests(req -> req
-                        .requestMatchers("/api/authenticate", "/api/register",("/api/auth")).permitAll()
+                        .requestMatchers(
+                                "/api/authenticate",
+                                "/api/register",
+                                "/api/auth",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/swagger-resources/**"
+                        ).permitAll()
                         .requestMatchers("/api/home/users/**").hasAuthority(Role.SUPER_ADMIN.name())
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))

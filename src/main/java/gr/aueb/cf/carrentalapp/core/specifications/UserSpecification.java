@@ -10,12 +10,12 @@ public class UserSpecification {
     }
 
     public static Specification<User> userVatIs(String vat) {
-        return ((root, query, criteriaBuilder) -> {
+        return (root, query, criteriaBuilder) -> {
             if (vat == null || vat.isBlank())
                 return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
 
-            return criteriaBuilder.equal(root.get("vat"), vat);
-        });
+            return criteriaBuilder.like(root.get("vat"), "%" + vat + "%");
+        };
     }
 
     public static Specification<User> userIsActive(Boolean isActive) {

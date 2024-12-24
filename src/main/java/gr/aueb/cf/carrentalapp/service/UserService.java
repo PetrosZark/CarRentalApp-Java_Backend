@@ -119,8 +119,7 @@ public class UserService {
 
     private Specification<User> getSpecsFromFilters(UserFilters filters) {
         return Specification
-                .where(UserSpecification.stringFieldLike("uuid", filters.getUuid()))
-                .and(UserSpecification.userVatIs(filters.getVat()))
+                .where(UserSpecification.userVatIs(filters.getVat()))
                 .and(UserSpecification.userIsActive(filters.getIsActive()));
     }
 

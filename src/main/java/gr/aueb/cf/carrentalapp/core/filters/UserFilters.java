@@ -1,6 +1,7 @@
 package gr.aueb.cf.carrentalapp.core.filters;
 
 import lombok.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 
 @Getter
@@ -12,14 +13,12 @@ import org.springframework.lang.Nullable;
 public class UserFilters extends GenericFilters {
 
     @Nullable
-    private String uuid;
-
-    @Nullable
     private String vat;
 
     @Nullable
     private Boolean isActive;
 
-
+    @Nullable
+    private Pageable pageable;
 
 }

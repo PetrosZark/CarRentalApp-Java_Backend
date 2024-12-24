@@ -77,6 +77,7 @@ public class GarageService {
         Car car = carRepository.findByIdAndUser(carId, loggedInUser)
                 .orElseThrow(() -> new AppObjectNotFoundException("Car","Car not found"));
 
+
         Car updatedCar = mapper.updateCarEntity(dto, car, city);
         carRepository.save(updatedCar);
         return mapper.mapToCarReadOnlyDTO(updatedCar);
@@ -84,6 +85,7 @@ public class GarageService {
 
     @Transactional(rollbackOn = Exception.class)
     public void deleteCar(User user, Long carId) throws AppObjectNotFoundException {
+
         Car car = carRepository.findByIdAndUser(carId, user)
                 .orElseThrow(() -> new AppObjectNotFoundException("Car","Car not found"));
         carRepository.delete(car);
