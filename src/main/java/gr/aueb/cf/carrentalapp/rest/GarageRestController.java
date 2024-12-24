@@ -9,6 +9,7 @@ import gr.aueb.cf.carrentalapp.model.Car;
 import gr.aueb.cf.carrentalapp.model.User;
 import gr.aueb.cf.carrentalapp.repository.CarRepository;
 import gr.aueb.cf.carrentalapp.service.GarageService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/home/garage")
+@SecurityRequirement(name = "Bearer Authentication")
 @RequiredArgsConstructor
 public class GarageRestController {
 

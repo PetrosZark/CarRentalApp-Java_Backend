@@ -71,4 +71,14 @@ public class CarSpecification {
     public static Specification<Car> userIsNot(User user) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.notEqual(root.get("user"), user);
     }
+
+    public static Specification<Car> userIsActive(Boolean isActive) {
+        return (root, query, criteriaBuilder) -> {
+            if (isActive == null) {
+                return criteriaBuilder.isTrue(criteriaBuilder.literal(true));  // No filter
+            }
+            // Join with the user entity and filter by isActive
+            return criteriaBuilder.equal(root.join("user").get("isActive"), isActive);
+        };
+    }
 }

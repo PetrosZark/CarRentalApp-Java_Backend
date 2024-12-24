@@ -9,6 +9,7 @@ import gr.aueb.cf.carrentalapp.service.BrandService;
 import gr.aueb.cf.carrentalapp.service.CarModelService;
 import gr.aueb.cf.carrentalapp.service.CityService;
 import gr.aueb.cf.carrentalapp.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/home/manage-entities")
+@SecurityRequirement(name = "Bearer Authentication")
 @RequiredArgsConstructor
 public class ManageEntitiesRestController {
 

@@ -19,20 +19,17 @@ import org.springframework.stereotype.Service;
 public class CarService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CarService.class);
-
     private final CarRepository carRepository;
     private final Mapper mapper;
 
     @Transactional
     public Paginated<CarReadOnlyDTO> getCarsFilteredPaginated(CarFilters filters) {
         try {
-            LOGGER.debug("Filters received in service: {}", filters);
             var filtered = carRepository.findAll(getSpecsFromFilters(filters), filters.getPageable());
-            LOGGER.debug("Repository returned: totalElements={}, totalPages={}", filtered.getTotalElements(), filtered.getTotalPages());
             return new Paginated<>(filtered.map(mapper::mapToCarReadOnlyDTO));
         } catch (Exception e) {
             LOGGER.error("Error in getCarsFilteredPaginated", e);
-            throw e; // Propagate the exception to see the stack trace in logs
+            throw e;
         }
     }
 
@@ -66,6 +63,8 @@ public class CarService {
         if (filters.getUser() != null) {
             specs = specs.and(CarSpecification.userIsNot(filters.getUser()));
         }
+
+        specs = specs.and(CarSpecification.userIsActive(true));
 
         return specs;
     }

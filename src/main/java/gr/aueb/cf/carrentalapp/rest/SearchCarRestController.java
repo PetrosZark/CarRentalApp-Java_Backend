@@ -15,6 +15,7 @@ import gr.aueb.cf.carrentalapp.service.BrandService;
 import gr.aueb.cf.carrentalapp.service.CarModelService;
 import gr.aueb.cf.carrentalapp.service.CarService;
 import gr.aueb.cf.carrentalapp.service.CityService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/home/cars")
+@SecurityRequirement(name = "Bearer Authentication")
 @RequiredArgsConstructor
 public class SearchCarRestController {
 
