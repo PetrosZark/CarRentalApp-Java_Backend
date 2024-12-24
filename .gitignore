@@ -35,3 +35,16 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Ignore Tomcat logs
+logs/
+*.log
+
+# Ignore IntelliJ logs (optional)
+.idea/logs/
+*.tmp
+
+# Ignore Spring Boot logs
+*.out
+*.bak
+*.swp
