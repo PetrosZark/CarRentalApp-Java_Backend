@@ -5,10 +5,25 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-
 import java.io.IOException;
 
+/**
+ * Custom entry point to handle unauthorized access attempts in Spring Security.
+ * This is triggered when an unauthenticated user tries to access a protected resource.
+ * Returns a 401 Unauthorized response with a custom JSON error message.
+ */
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    /**
+     * Handles unauthorized requests by returning a custom 401 error response.
+     * This method is called automatically when authentication is required but not provided.
+     *
+     * @param request       the HttpServletRequest object representing the client's request
+     * @param response      the HttpServletResponse object used to return the error response
+     * @param authException the exception representing the authentication error
+     * @throws IOException      if an input/output error occurs during response writing
+     * @throws ServletException if a servlet error occurs
+     */
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,

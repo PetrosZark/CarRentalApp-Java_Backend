@@ -17,10 +17,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 
-
+/**
+ * JWT Authentication Filter that intercepts incoming HTTP requests to validate JWT tokens.
+ * This filter extends OncePerRequestFilter to ensure it is executed once per request.
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -29,34 +31,51 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
+
+    /**
+     * Intercepts and processes incoming requests to validate JWT tokens.
+     * Extracts the token from the Authorization header and authenticates the user if valid.
+     *
+     * @param request     The incoming HTTP request.
+     * @param response    The HTTP response to be sent back to the client.
+     * @param filterChain The filter chain to pass the request to the next filter.
+     * @throws ServletException If there is a servlet processing error.
+     * @throws IOException      If an input or output error occurs during filtering.
+     */
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
+        // Extract the Authorization header
         String authHeader = request.getHeader("Authorization");
         String jwt;
         String username;
 
-
         LOGGER.info("Authorization Header: " + authHeader);
+
+        // Continue the filter chain if the header is missing or invalid
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            LOGGER.warn("Missing or malformed Authorization header");
+            LOGGER.warn("Missing or malformed authorization header");
             filterChain.doFilter(request, response);
             return;
         }
 
+        // Extract the JWT token from the Authorization header
         jwt = authHeader.substring(7);
         LOGGER.info("Extracted JWT: " + jwt);
 
 
         try {
+            // Extract username from the token
             username = jwtService.extractSubject(jwt);
 
+            // Authenticate if the user is not already authenticated
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
+                // Validate the token and set authentication in the SecurityContext
                 if (jwtService.isTokenValid(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
@@ -71,6 +90,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (ExpiredJwtException e) {
+            // Handle expired token exception and respond with 401 Unauthorized
             LOGGER.warn("WARN: Token is expired ", e);
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
@@ -78,6 +98,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.getWriter().write(jsonBody);
             return;
         } catch (Exception e) {
+            // Handle general token parsing or validation errors
             LOGGER.warn("WARN: Something went wrong while parsing JWT ", e);
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
@@ -85,6 +106,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.getWriter().write(jsonBody);
             return;
         }
+
+        // Continue the request processing if no issues occur
         filterChain.doFilter(request, response);
     }
 }

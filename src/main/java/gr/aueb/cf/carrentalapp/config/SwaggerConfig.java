@@ -7,6 +7,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Swagger Configuration for the Car Rental API.
+ *
+ * This class configures OpenAPI 3.0 for automatic API documentation generation using Swagger.
+ * It defines API metadata (title, version, description) and configures global JWT authentication.
+ */
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
@@ -14,7 +20,8 @@ import org.springframework.context.annotation.Configuration;
                 version = "1.0",
                 description = "API documentation for the Car Rental application"
         ),
-        security = @SecurityRequirement(name = "Bearer Authentication")  // Apply JWT globally
+        // Apply JWT globally
+        security = @SecurityRequirement(name = "Bearer Authentication")
 )
 @SecurityScheme(
         name = "Bearer Authentication",
@@ -24,5 +31,7 @@ import org.springframework.context.annotation.Configuration;
 )
 
 public class SwaggerConfig {
+        // This class doesn't need additional methods or logic.
+        // The annotations are sufficient to configure Swagger globally.
 }
 

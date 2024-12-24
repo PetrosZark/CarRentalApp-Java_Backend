@@ -15,6 +15,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * Abstract base entity that provides auditing fields for all entities that extend it.
+ * This class automatically handles the creation and modification timestamps.
+ */
 @MappedSuperclass
 @Getter
 @Setter
@@ -24,10 +28,18 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractEntity implements Serializable {
 
+    /**
+     * Timestamp indicating when the entity was created.
+     * This value is automatically set and cannot be updated.
+     */
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    /**
+     * Timestamp indicating when the entity was last updated.
+     * This value is automatically updated on every modification.
+     */
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

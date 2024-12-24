@@ -15,6 +15,9 @@ import gr.aueb.cf.carrentalapp.service.BrandService;
 import gr.aueb.cf.carrentalapp.service.CarModelService;
 import gr.aueb.cf.carrentalapp.service.CarService;
 import gr.aueb.cf.carrentalapp.service.CityService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -26,9 +29,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+/**
+ * REST controller for searching cars, brands, models, and cities.
+ * Provides endpoints to filter and retrieve cars with specific attributes.
+ */
 @RestController
 @RequestMapping("/api/home/cars")
-@SecurityRequirement(name = "Bearer Authentication")
+@SecurityRequirement(name = "Bearer Authentication") // Apply JWT security globally
 @RequiredArgsConstructor
 public class SearchCarRestController {
 
@@ -40,9 +47,29 @@ public class SearchCarRestController {
     private final Mapper mapper;
 
     /**
-     * Get paginated and filtered cars.
-     * If no filters are provided, returns all cars paginated.
+     * Retrieves paginated and filtered cars.
+     * Allows filtering by license plate, availability, brand, car model, and city.
+     *
+     * @param loggedInUser  The authenticated user.
+     * @param licensePlate  Optional filter by license plate.
+     * @param available     Filter by availability (default: true).
+     * @param brandName     Optional filter by brand name.
+     * @param carModelName  Optional filter by car model name.
+     * @param cityName      Optional filter by city.
+     * @param page          Page number (default: 0).
+     * @param size          Page size (default: 10).
+     * @param sortBy        Sort field (default: id).
+     * @param sortDirection Sort direction (ASC/DESC, default: ASC).
+     * @return Paginated list of cars.
      */
+    @Operation(summary = "Retrieve filtered cars with pagination",
+            description = "Returns paginated and filtered cars based on provided filters.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Filtered cars retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request - Invalid filter criteria"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - User is not authenticated"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping
     public ResponseEntity<Paginated<CarReadOnlyDTO>> getCarsFilteredPaginated(
             @AuthenticationPrincipal User loggedInUser,
@@ -84,13 +111,22 @@ public class SearchCarRestController {
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             LOGGER.error("Error fetching cars with filters", e);
-            return ResponseEntity.status(500).build();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
-     * Get all available car brands.
+     * Retrieves all available car brands.
+     *
+     * @return List of car brands.
      */
+    @Operation(summary = "Retrieve all car brands",
+            description = "Returns a list of all available car brands.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Car brands retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - User is not authenticated"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/brands")
     public ResponseEntity<List<BrandReadOnlyDTO>> getAllBrands() {
         try {
@@ -106,8 +142,17 @@ public class SearchCarRestController {
     }
 
     /**
-     * Get all available car models.
+     * Retrieves all available car models.
+     *
+     * @return List of car models.
      */
+    @Operation(summary = "Retrieve all car models",
+            description = "Returns a list of all available car models.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Car models retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - User is not authenticated"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/models")
     public ResponseEntity<List<CarModelReadOnlyDTO>> getAllCarModels() {
         try {
@@ -123,8 +168,17 @@ public class SearchCarRestController {
     }
 
     /**
-     * Get all available cities.
+     * Retrieves all available cities.
+     *
+     * @return List of cities.
      */
+    @Operation(summary = "Retrieve all cities",
+            description = "Returns a list of all available cities.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cities retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - User is not authenticated"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/cities")
     public ResponseEntity<List<CityReadOnlyDTO>> getAllCities() {
         try {
