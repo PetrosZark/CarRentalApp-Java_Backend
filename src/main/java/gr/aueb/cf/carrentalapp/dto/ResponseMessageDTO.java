@@ -20,15 +20,4 @@ public class ResponseMessageDTO {
      * A detailed description providing more context about the response.
      */
     private String description;
-
-    /**
-     * Constructs a ResponseMessageDTO with only a response code.
-     * The description is set to an empty string by default.
-     *
-     * @param code The response code to be sent.
-     */
-    public ResponseMessageDTO(String code) {
-        this.code = code;
-        this.description = "";
-    }
 }

@@ -189,7 +189,6 @@ public class User extends AbstractEntity implements UserDetails {
         return this.getIsActive() == null || this.getIsActive();
     }
 
-
     /**
      * Retrieves the authorities (roles) granted to the user.
      * This method returns a list containing the user's role.

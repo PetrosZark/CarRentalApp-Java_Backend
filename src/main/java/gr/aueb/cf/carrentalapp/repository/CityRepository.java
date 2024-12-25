@@ -12,7 +12,7 @@ import java.util.Optional;
  * Implements JpaSpecificationExecutor to allow dynamic and flexible queries.
  * </p>
  */
-public interface CityRepository extends JpaRepository<City, Long>, JpaSpecificationExecutor {
+public interface CityRepository extends JpaRepository<City, Long>, JpaSpecificationExecutor<City> {
 
         /**
          * Finds a city by its name.

@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,16 +45,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         // Extract the Authorization header
         String authHeader = request.getHeader("Authorization");
         String jwt;
         String username;
 
-        LOGGER.info("Authorization Header: " + authHeader);
+        LOGGER.info("Authorization Header: {}", authHeader);
 
         // Continue the filter chain if the header is missing or invalid
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -64,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Extract the JWT token from the Authorization header
         jwt = authHeader.substring(7);
-        LOGGER.info("Extracted JWT: " + jwt);
+        LOGGER.info("Extracted JWT: {}", jwt);
 
 
         try {
@@ -83,10 +84,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             userDetails.getAuthorities()
                     );
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    LOGGER.info("Populating SecurityContextHolder for user: " + username);
+                    LOGGER.info("Populating SecurityContextHolder for user: {}", username);
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 } else {
-                    LOGGER.warn("Token is not valid" + request.getRequestURI());
+                    LOGGER.warn("Token is not valid {}", request.getRequestURI());
                 }
             }
         } catch (ExpiredJwtException e) {

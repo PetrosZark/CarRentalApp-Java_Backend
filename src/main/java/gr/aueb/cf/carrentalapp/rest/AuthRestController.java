@@ -52,12 +52,28 @@ public class AuthRestController {
             @ApiResponse(responseCode = "403", description = "Invalid credentials or user not authorized")
     })
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponseDTO> authenticate
-            (@Valid @RequestBody AuthenticationRequestDTO dto) throws AppObjectNotAuthorizedException {
-        AuthenticationResponseDTO authenticationResponseDTO = authenticationService.authenticate(dto);
-        LOGGER.info("User authenticated.");
-        return new ResponseEntity<>(authenticationResponseDTO, HttpStatus.OK);
+    public ResponseEntity<?> authenticate(@Valid @RequestBody AuthenticationRequestDTO dto, BindingResult bindingResult)
+            throws ValidationException {
+
+        LOGGER.info("Received authentication request for user: {}", dto.getUsername());
+
+        // Validation check
+        if (bindingResult.hasErrors()) {
+            LOGGER.error("Validation errors: {}", bindingResult.getAllErrors());
+            throw new ValidationException(bindingResult);
+        }
+
+        try {
+            AuthenticationResponseDTO authenticationResponseDTO = authenticationService.authenticate(dto);
+            LOGGER.info("User authenticated successfully.");
+            return new ResponseEntity<>(authenticationResponseDTO, HttpStatus.OK);
+        } catch (AppObjectNotAuthorizedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
     }
+
 
     /**
      * Registers a new user in the system.
@@ -80,7 +96,7 @@ public class AuthRestController {
         LOGGER.info("Received request to register user: {}", dto);
 
         if (bindingResult.hasErrors()) {
-            LOGGER.error("Validation errors: {}", bindingResult.getAllErrors());
+            LOGGER.error("Registering errors: {}", bindingResult.getAllErrors());
             throw new ValidationException(bindingResult);
         }
 

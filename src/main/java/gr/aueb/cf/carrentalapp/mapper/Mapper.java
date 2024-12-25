@@ -65,6 +65,7 @@ public class Mapper {
         dto.setUpdatedAt(user.getUpdatedAt());
         dto.setIsActive(user.getIsActive());
         dto.setRole(user.getRole().toString());
+        dto.setGender(user.getGender().toString());
         return dto;
     }
 

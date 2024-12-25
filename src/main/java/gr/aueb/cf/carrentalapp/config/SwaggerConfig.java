@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Swagger Configuration for the Car Rental API.
- *
  * This class configures OpenAPI 3.0 for automatic API documentation generation using Swagger.
  * It defines API metadata (title, version, description) and configures global JWT authentication.
  */

@@ -59,6 +59,11 @@ public class UserReadOnlyDTO {
     private LocalDate dateOfBirth;
 
     /**
+     * The gender of the user.
+     */
+    private String gender;
+
+    /**
      * The timestamp indicating when the user record was created.
      */
     private LocalDateTime createdAt;
