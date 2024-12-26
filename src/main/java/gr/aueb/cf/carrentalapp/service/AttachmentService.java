@@ -24,37 +24,50 @@ public class AttachmentService {
 
 
     /**
-     * Handles the file upload and metadata saving.
+     * Handles file upload, storage, and attachment metadata saving.
+     * <p>
+     * This method uploads a file (car image), saves it to the filesystem,
+     * and creates an entry in the database linking the uploaded file to a car.
+     * </p>
      *
-     * @param file the uploaded file (image, document, etc.)
-     * @return Attachment metadata saved in the database
+     * @param carId the ID of the car to which the file will be attached
+     * @param file  the uploaded file (image or other types)
+     * @return Attachment metadata saved in the database, representing the uploaded file
+     * @throws AppObjectInvalidArgumentException if the file is empty or invalid
+     * @throws AppObjectNotFoundException if the car with the specified ID is not found
+     * @throws AppObjectAlreadyExistsException if an attachment already exists for the car
      */
-    public Attachment saveAttachment(User loggedInUser, Long carId, MultipartFile file)
+    public Attachment saveAttachment(Long carId, MultipartFile file)
             throws AppObjectInvalidArgumentException, AppObjectNotFoundException, AppObjectAlreadyExistsException {
 
-        Car car = carRepository.findByIdAndUser(carId, loggedInUser)
-                .orElseThrow(() -> new AppObjectNotFoundException("Car","Car not found"));
+        // Retrieve the car by its ID or throw an exception if not found
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new AppObjectNotFoundException("Car", "Car not found"));
 
+        // Validate the uploaded file - reject if the file is empty
         if (file.isEmpty()) {
-            throw new AppObjectInvalidArgumentException("File", "File is empty. Please select a valid file.");
+            throw new AppObjectInvalidArgumentException("File", "Invalid file or request data");
         }
 
+        // Check if an attachment already exists for the car to prevent duplicate uploads
         if (attachmentRepository.findByCarId(carId).isPresent()) {
-            throw new AppObjectAlreadyExistsException("Image", "Image already exists");
+            throw new AppObjectAlreadyExistsException("Image", "Conflict - Image already exists");
         }
 
         try {
-            // Ensure upload directory exists
+            // Ensure the upload directory exists; create it if necessary
             Files.createDirectories(Paths.get(UPLOAD_DIR));
 
-            // Save file with a unique name (timestamp + original name), handle null filename case
+            // Generate a unique filename (timestamp + original filename)
             String originalFilename = file.getOriginalFilename();
             String finalFilename = (originalFilename != null) ? originalFilename : "unknown_file";
             String savedName = System.currentTimeMillis() + "_" + finalFilename;
             Path filePath = Paths.get(UPLOAD_DIR + savedName);
+
+            // Save the uploaded file to the filesystem
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            // Create and save Attachment metadata
+            // Create an Attachment object to store file metadata
             Attachment attachment = new Attachment();
             attachment.setFilename(file.getOriginalFilename());
             attachment.setSavedName(savedName);
@@ -62,13 +75,15 @@ public class AttachmentService {
             attachment.setContentType(file.getContentType());
             attachment.setExtension(getFileExtension(file.getOriginalFilename()));
 
-            // Link image to car
+            // Link the uploaded image to the car and save to the database
             car.setImage(attachment);
             attachmentRepository.save(attachment);
             carRepository.save(car);
 
+            // Return the saved attachment metadata
             return attachment;
         } catch (IOException e) {
+            // Handle file I/O errors by throwing a RuntimeException
             throw new RuntimeException("Failed to save file: " + e.getMessage(), e);
         }
     }

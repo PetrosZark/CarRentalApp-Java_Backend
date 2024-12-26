@@ -32,7 +32,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
-
     /**
      * Intercepts and processes incoming requests to validate JWT tokens.
      * Extracts the token from the Authorization header and authenticates the user if valid.
@@ -111,4 +110,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Continue the request processing if no issues occur
         filterChain.doFilter(request, response);
     }
+
+
 }

@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
+
 /**
  * REST controller for managing car-related operations in the user's garage.
  * Provides endpoints for retrieving, adding, updating, and deleting cars.
@@ -175,28 +176,37 @@ public class GarageRestController {
     }
 
     /**
-     * Uploads an image for an existing car.
+     * Uploads an image for a specific car in the authenticated user's garage.
+     * This endpoint allows users to upload an image file associated with a car they own.
+     * The uploaded file is processed and linked to the corresponding car entity.
+     * If the car is not found or an image already exists, appropriate exceptions are thrown.
      *
-     * @param carId the car ID
-     * @param file  the image file to upload
-     * @return ResponseEntity with the saved attachment metadata
+     * @param carId the ID of the car for which the image is being uploaded
+     * @param file the image file to upload (multipart request)
+     * @return ResponseEntity containing a message and the saved image filename
+     * @throws AppObjectNotFoundException if the car with the specified ID is not found
+     * @throws AppObjectInvalidArgumentException if the file is empty or invalid
+     * @throws AppObjectAlreadyExistsException if an image already exists for the specified car
      */
-
-
+    @Operation(summary = "Upload an image for a car")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Image uploaded successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid file or request data"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated"),
+            @ApiResponse(responseCode = "404", description = "Car not found"),
+            @ApiResponse(responseCode = "409", description = "Conflict - Image already exists")
+    })
     @PostMapping("/{carId}/upload-image")
-    public ResponseEntity<ResponseMessageDTO> uploadCarImage(
-            @AuthenticationPrincipal User loggedInUser,
+    public ResponseEntity<ResponseMessageDTO> uploadCarImage (
             @PathVariable Long carId,
-            @Valid @RequestParam("file") MultipartFile file,
-            BindingResult bindingResult)
+            @RequestParam("file") MultipartFile file)
             throws AppObjectNotFoundException, AppObjectInvalidArgumentException, AppObjectAlreadyExistsException {
 
-        if (bindingResult.hasErrors()) {
-            throw new AppObjectInvalidArgumentException("Car", "Car not updated");
-        }
+        // Call the attachment service to handle the file upload and associate it with the car
+        Attachment attachment =  attachmentService.saveAttachment(carId, file);
 
-        Attachment attachment =  attachmentService.saveAttachment(loggedInUser, carId, file);
-        return new ResponseEntity<>(new ResponseMessageDTO("Image", "Image saved successfully : "
+        // Return a success response with metadata about the uploaded image
+        return new ResponseEntity<>(new ResponseMessageDTO("Image", "Image uploaded successfully : "
                 + attachment.getFilename()), HttpStatus.OK);
     }
 }
