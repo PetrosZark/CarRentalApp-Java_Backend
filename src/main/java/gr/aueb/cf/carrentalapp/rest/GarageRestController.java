@@ -4,10 +4,13 @@ import gr.aueb.cf.carrentalapp.core.exceptions.*;
 import gr.aueb.cf.carrentalapp.dto.CarInsertDTO;
 import gr.aueb.cf.carrentalapp.dto.CarReadOnlyDTO;
 import gr.aueb.cf.carrentalapp.dto.CarUpdateDTO;
+import gr.aueb.cf.carrentalapp.dto.ResponseMessageDTO;
 import gr.aueb.cf.carrentalapp.mapper.Mapper;
+import gr.aueb.cf.carrentalapp.model.Attachment;
 import gr.aueb.cf.carrentalapp.model.Car;
 import gr.aueb.cf.carrentalapp.model.User;
 import gr.aueb.cf.carrentalapp.repository.CarRepository;
+import gr.aueb.cf.carrentalapp.service.AttachmentService;
 import gr.aueb.cf.carrentalapp.service.GarageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,6 +27,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 
 /**
  * REST controller for managing car-related operations in the user's garage.
@@ -36,6 +41,7 @@ import org.springframework.web.bind.annotation.*;
 public class GarageRestController {
 
     private final GarageService garageService;
+    private final AttachmentService attachmentService;
     private static final Logger LOGGER = LoggerFactory.getLogger(GarageRestController.class);
     private final CarRepository carRepository;
     private final Mapper mapper;
@@ -166,6 +172,32 @@ public class GarageRestController {
         Car car = carRepository.findById(carId)
                 .orElseThrow(() -> new AppObjectNotFoundException("Car", "Car not found"));
         return ResponseEntity.ok(mapper.mapToCarReadOnlyDTO(car));
+    }
+
+    /**
+     * Uploads an image for an existing car.
+     *
+     * @param carId the car ID
+     * @param file  the image file to upload
+     * @return ResponseEntity with the saved attachment metadata
+     */
+
+
+    @PostMapping("/{carId}/upload-image")
+    public ResponseEntity<ResponseMessageDTO> uploadCarImage(
+            @AuthenticationPrincipal User loggedInUser,
+            @PathVariable Long carId,
+            @Valid @RequestParam("file") MultipartFile file,
+            BindingResult bindingResult)
+            throws AppObjectNotFoundException, AppObjectInvalidArgumentException, AppObjectAlreadyExistsException {
+
+        if (bindingResult.hasErrors()) {
+            throw new AppObjectInvalidArgumentException("Car", "Car not updated");
+        }
+
+        Attachment attachment =  attachmentService.saveAttachment(loggedInUser, carId, file);
+        return new ResponseEntity<>(new ResponseMessageDTO("Image", "Image saved successfully : "
+                + attachment.getFilename()), HttpStatus.OK);
     }
 }
 

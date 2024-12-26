@@ -113,7 +113,8 @@ public class GarageService {
      * @throws AppObjectInvalidArgumentException if the city ID is invalid
      */
     @Transactional
-    public CarReadOnlyDTO updateCar(User loggedInUser, Long carId, CarUpdateDTO dto) throws AppObjectNotFoundException, AppObjectInvalidArgumentException {
+    public CarReadOnlyDTO updateCar(User loggedInUser, Long carId, CarUpdateDTO dto)
+            throws AppObjectNotFoundException, AppObjectInvalidArgumentException {
 
         // Validate city existence for the update
         City city = cityRepository.findById(dto.getCityId())

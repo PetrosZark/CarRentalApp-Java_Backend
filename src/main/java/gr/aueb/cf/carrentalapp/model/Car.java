@@ -85,9 +85,17 @@ public class Car extends AbstractEntity {
 
     /**
      * Relationship mapping to the city where the car is located.
-     * A car may be associated with a city.
+     * A car must be associated with a city.
      */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "city_id")
     private City city;
+
+    /**
+     * Relationship mapping to the photo of the car.
+     * A car may be associated with a photo.
+     */
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "attachment_id")
+    private Attachment image;
 }
