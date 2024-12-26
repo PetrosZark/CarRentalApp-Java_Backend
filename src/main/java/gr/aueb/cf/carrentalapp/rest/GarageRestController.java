@@ -29,6 +29,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 
 
 /**
@@ -208,6 +209,34 @@ public class GarageRestController {
         // Return a success response with metadata about the uploaded image
         return new ResponseEntity<>(new ResponseMessageDTO("Image", "Image uploaded successfully : "
                 + attachment.getFilename()), HttpStatus.OK);
+    }
+
+    /**
+     * Deletes the image associated with a specific car.
+     *
+     * @param carId the ID of the car whose image is to be deleted
+     * @return ResponseEntity with a success message
+     * @throws AppObjectNotFoundException if the car or image is not found
+     * @throws IOException if file deletion fails
+     */
+    @Operation(summary = "Delete an image associated with a car")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Image successfully deleted"),
+            @ApiResponse(responseCode = "404", description = "Car or image not found"),
+            @ApiResponse(responseCode = "500", description = "File deletion failed")
+    })
+    @DeleteMapping("/{carId}/delete-image")
+    public ResponseEntity<ResponseMessageDTO> deleteCarImage(@PathVariable Long carId)
+            throws AppObjectNotFoundException, IOException {
+
+        LOGGER.info("SecurityContext before service call: {}", SecurityContextHolder.getContext().getAuthentication());
+
+        attachmentService.deleteAttachment(carId);
+
+        LOGGER.info("SecurityContext after service call: {}", SecurityContextHolder.getContext().getAuthentication());
+
+        return new ResponseEntity<>(new ResponseMessageDTO
+                ("Image", "Image deleted successfully"), HttpStatus.OK);
     }
 }
 

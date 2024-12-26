@@ -7,6 +7,7 @@ import gr.aueb.cf.carrentalapp.model.Attachment;
 import gr.aueb.cf.carrentalapp.model.Car;
 import gr.aueb.cf.carrentalapp.repository.AttachmentRepository;
 import gr.aueb.cf.carrentalapp.repository.CarRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +37,7 @@ public class AttachmentService {
      * @throws AppObjectNotFoundException if the car with the specified ID is not found
      * @throws AppObjectAlreadyExistsException if an attachment already exists for the car
      */
+    @Transactional
     public Attachment saveAttachment(Long carId, MultipartFile file)
             throws AppObjectInvalidArgumentException, AppObjectNotFoundException, AppObjectAlreadyExistsException {
 
@@ -76,15 +78,45 @@ public class AttachmentService {
 
             // Link the uploaded image to the car and save to the database
             car.setImage(attachment);
-            attachmentRepository.save(attachment);
             carRepository.save(car);
-
-            // Return the saved attachment metadata
-            return attachment;
+            return attachmentRepository.save(attachment);
         } catch (IOException e) {
             // Handle file I/O errors by throwing a RuntimeException
             throw new RuntimeException("Failed to save file: " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Deletes an image attachment by car ID.
+     *
+     * @param carId the ID of the car whose image is to be deleted
+     * @throws AppObjectNotFoundException if the car or attachment is not found
+     * @throws IOException if file deletion fails
+     */
+    @Transactional
+    public void deleteAttachment(Long carId) throws AppObjectNotFoundException, IOException {
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new AppObjectNotFoundException("Car", "Car not found"));
+
+        Attachment attachment = car.getImage();
+
+        if (attachment == null) {
+            throw new AppObjectNotFoundException("Attachment", "No image found for this car");
+        }
+
+        // Delete the file from the filesystem
+        Path filePath = Paths.get(attachment.getFilePath());
+        if (Files.exists(filePath)) {
+            Files.delete(filePath);
+        }
+
+        // Remove the attachment from the car and database
+        car.setImage(null);
+
+        // Save the car without the image
+        carRepository.save(car);
+
+        attachmentRepository.delete(attachment);  // Remove the attachment from the database
     }
 
     /**
