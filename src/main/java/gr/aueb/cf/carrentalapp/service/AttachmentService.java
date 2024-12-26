@@ -5,7 +5,6 @@ import gr.aueb.cf.carrentalapp.core.exceptions.AppObjectInvalidArgumentException
 import gr.aueb.cf.carrentalapp.core.exceptions.AppObjectNotFoundException;
 import gr.aueb.cf.carrentalapp.model.Attachment;
 import gr.aueb.cf.carrentalapp.model.Car;
-import gr.aueb.cf.carrentalapp.model.User;
 import gr.aueb.cf.carrentalapp.repository.AttachmentRepository;
 import gr.aueb.cf.carrentalapp.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
