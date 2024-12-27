@@ -42,9 +42,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class GarageRestController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GarageRestController.class);
     private final GarageService garageService;
     private final AttachmentService attachmentService;
-    private static final Logger LOGGER = LoggerFactory.getLogger(GarageRestController.class);
     private final CarRepository carRepository;
     private final Mapper mapper;
 
@@ -228,13 +228,7 @@ public class GarageRestController {
     @DeleteMapping("/{carId}/delete-image")
     public ResponseEntity<ResponseMessageDTO> deleteCarImage(@PathVariable Long carId)
             throws AppObjectNotFoundException, IOException {
-
-        LOGGER.info("SecurityContext before service call: {}", SecurityContextHolder.getContext().getAuthentication());
-
         attachmentService.deleteAttachment(carId);
-
-        LOGGER.info("SecurityContext after service call: {}", SecurityContextHolder.getContext().getAuthentication());
-
         return new ResponseEntity<>(new ResponseMessageDTO
                 ("Image", "Image deleted successfully"), HttpStatus.OK);
     }

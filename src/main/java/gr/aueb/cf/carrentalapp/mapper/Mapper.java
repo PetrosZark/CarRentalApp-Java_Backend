@@ -113,6 +113,14 @@ public class Mapper {
         dto.setUserPhone(car.getUser().getPhone());
         dto.setUserEmail(car.getUser().getEmail());
         dto.setAvailable(car.getAvailable());
+        String filePath = car.getImage() != null ? car.getImage().getFilePath() : null;
+        if (filePath != null) {
+            // Extract filename from the full path
+            String fileName = filePath.substring(filePath.lastIndexOf("\\") + 1);
+            dto.setImagePath("/uploads/" + fileName);
+        } else {
+            dto.setImagePath(null);
+        }
         return dto;
     }
 

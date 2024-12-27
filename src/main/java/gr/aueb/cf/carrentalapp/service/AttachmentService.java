@@ -18,7 +18,7 @@ import java.nio.file.*;
 @RequiredArgsConstructor
 public class AttachmentService {
 
-    private static final String UPLOAD_DIR = "uploads/";
+    private static final String UPLOAD_DIR = System.getProperty("user.home") + "/car_rental_uploads/";
     private final AttachmentRepository attachmentRepository;
     private final CarRepository carRepository;
 

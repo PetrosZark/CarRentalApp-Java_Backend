@@ -2,7 +2,6 @@ INSERT INTO users (
     id,
     created_at,
     updated_at,
-    uuid,
     username,
     password,
     firstname,
@@ -18,7 +17,6 @@ INSERT INTO users (
     1,
     '2024-12-01 00:00:00',
     '2024-12-01 00:00:00',
-    'a1b2c3d4-e5f6-7g8h-9i10-jk11lm12n13o',
     'SuperAdmin',
     '$2a$12$IS4eMd5WCaVMRZb07kYlIuJCdOJKUap5NsGOcESbIknrb.C2pFOaa', --'Sa123456!'
     'Super',

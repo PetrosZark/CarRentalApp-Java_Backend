@@ -76,4 +76,9 @@ public class CarReadOnlyDTO {
      * The availability status of the car (true if available, false otherwise).
      */
     private Boolean available;
+
+    /**
+     * Path to the uploaded image file for the car.
+     */
+    private String imagePath;
 }
