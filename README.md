@@ -129,7 +129,7 @@ which is built to complement this backend.
 - **DELETE /api/home/garage/delete/{carId}** – Delete a car
 - **DELETE /api/home/garage/{carId}/delete-image** – Delete car image
 
-### 🚙 Search Cars Endpoint
+### 🚙 Search Cars Endpoints
 - **GET /api/home/cars** – Get paginated list of other users' cars
 - **GET /api/home/brands** – Get list of all brands
 - **GET /api/home/models** – Get list of all models
