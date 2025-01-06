@@ -197,4 +197,15 @@ docker run -p 8080:8080 carrental-backend
 The application will now be accessible at:
 http://localhost:8080
 
+## 📧 Contact
+For questions or feedback, feel free to reach out:
+- **Name**: Zarkadis Petros
+- **Email**: petros.zark@hotmail.com
+
+---
+
+## 🔐 Example Credentials
+Admin User:
+username: SuperAdmin
+password: Sa123456!
 

@@ -80,7 +80,10 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200"));
+        corsConfiguration.setAllowedOrigins(List.of(
+                "http://localhost:4200",
+                "http://localhost"   // Dockerized frontend
+        ));
         corsConfiguration.setAllowedMethods(List.of("*"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(true);
