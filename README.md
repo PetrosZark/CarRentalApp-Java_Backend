@@ -61,6 +61,10 @@ carrentalapp
 
 ```
 
+## Database Schema
+![Database Schema](docs/carrentaldb_schema.png)
+
+
 # ⚙️ Installation and Setup
 
 ## Prerequisites
