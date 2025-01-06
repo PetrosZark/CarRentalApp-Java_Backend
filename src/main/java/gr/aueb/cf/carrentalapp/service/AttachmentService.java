@@ -14,6 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.*;
 
+/**
+ * Service responsible for handling file attachments for cars.
+ * Provides methods to upload, save, and delete car image attachments.
+ */
 @Service
 @RequiredArgsConstructor
 public class AttachmentService {
@@ -120,10 +124,11 @@ public class AttachmentService {
     }
 
     /**
-     * Helper method to extract the file extension.
+     * Extracts the file extension from a filename.
+     * Assumes the filename contains at least one '.' character.
      *
-     * @param filename the name of the file
-     * @return the file extension (e.g., jpg, png, pdf)
+     * @param filename the name of the file to extract the extension from
+     * @return the file extension (e.g., "jpg", "png", "pdf"), or an empty string if no extension exists
      */
     private String getFileExtension(String filename) {
         return filename.substring(filename.lastIndexOf('.') + 1);
