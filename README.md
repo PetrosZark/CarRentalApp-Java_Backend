@@ -205,7 +205,7 @@ For questions or feedback, feel free to reach out:
 ---
 
 ## 🔐 Example Credentials
-Admin User:
-username: SuperAdmin
-password: Sa123456!
+- Admin User:
+  - username: SuperAdmin
+  - password: Sa123456!
 
