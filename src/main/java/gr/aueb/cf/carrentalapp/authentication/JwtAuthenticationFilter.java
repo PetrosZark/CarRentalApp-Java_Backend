@@ -53,11 +53,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwt;
         String username;
 
-        LOGGER.info("Authorization Header: {}", authHeader);
-
         // Continue the filter chain if the header is missing or invalid
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            LOGGER.warn("Missing or malformed authorization header");
+            LOGGER.debug("Missing or malformed authorization header");
             filterChain.doFilter(request, response);
             return;
         }
@@ -110,6 +108,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Continue the request processing if no issues occur
         filterChain.doFilter(request, response);
     }
-
-
 }

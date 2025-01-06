@@ -63,7 +63,7 @@ public class AttachmentService {
             String originalFilename = file.getOriginalFilename();
             String finalFilename = (originalFilename != null) ? originalFilename : "unknown_file";
             String savedName = System.currentTimeMillis() + "_" + finalFilename;
-            Path filePath = Paths.get(UPLOAD_DIR + savedName);
+            Path filePath = Paths.get(UPLOAD_DIR, savedName);
 
             // Save the uploaded file to the filesystem
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -78,7 +78,7 @@ public class AttachmentService {
 
             // Link the uploaded image to the car and save to the database
             car.setImage(attachment);
-            carRepository.save(car);
+
             return attachmentRepository.save(attachment);
         } catch (IOException e) {
             // Handle file I/O errors by throwing a RuntimeException
