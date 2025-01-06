@@ -1,5 +1,5 @@
 # 🚗 Car Rental App - Backend
-
+## A [Coding Factory](https://codingfactory.aueb.gr/) @ [AUEB](https://www.aueb.gr/) Final Project. Java - Spring Boot - Rest - Car Rental Application backend.
 ## 📝 Overview
 The Car Rental App backend is a Spring Boot application that provides RESTful APIs 
 for managing cars, users, and rental services. It handles operations such as car 
@@ -11,9 +11,13 @@ and transactional operations.
 - Car management (CRUD operations)
 - User registration and authentication
 - Photo upload and attachment to cars
-- Brand, car and city model management
+- Brand, model, car, city and user model management
 - Pagination and sorting for car listings
 - Validation and exception handling
+- Super Admins have enhanced permissions to:
+  - Manage brands, car models and cities
+  - Toggle user status
+  - Change user roles
 
 ## 🛠️ Technologies Used
 - **Java 17**
